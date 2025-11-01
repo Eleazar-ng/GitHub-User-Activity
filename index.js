@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { fetchGithubActivity, showHelp } from "./helper.js";
+import { fetchGithubActivity, formatActivity, showHelp } from "./helper.js";
 
 //Main Function
 async function main(){
@@ -25,9 +25,9 @@ async function main(){
     }
 
     const userActivities = activities.data
-    console.log(`******** Github Activity for ${username} ********\n`)
+    console.log(`******** Recent Github Activity for ${username} ********\n`)
     userActivities.forEach((activity, index) => {
-      console.log(`- ${index + 1}. Type: ${activity.type}, Repo: ${activity.repo.name}`)
+      console.log(`${formatActivity(activity,index)}\n`)
     });
     return
   } catch (error) {
