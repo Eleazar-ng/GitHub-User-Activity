@@ -128,7 +128,7 @@ function formatActivity(event, index){
   switch(event.type) {
     case 'PushEvent':
       const branch = event.payload.ref.replace('refs/heads/', '');
-      message = `Pushed a commit to ${branch} in ${event.repo.name}`;
+      message = `Pushed commit(s) to ${branch} in ${event.repo.name}`;
       break;
     case 'CreateEvent':
       const refType = event.payload.ref_type;
@@ -143,7 +143,7 @@ function formatActivity(event, index){
     case 'PullRequestEvent':
       const prAction = event.payload.action;
       const pr = event.payload.pull_request;
-      message = `${prAction} pull request #${pr.number}: "${pr.title}" in ${event.repo.name}`;
+      message = `${prAction} pull request #${pr.number} in ${event.repo.name}`;
       break;
     case 'ForkEvent':
       const forkee = event.payload.forkee;
@@ -162,19 +162,33 @@ function formatActivity(event, index){
       message = `Commented on issue #${issueInfo.number} in ${event.repo.name}: "${issueComment.body.substring(0, 50)}${issueComment.body.length > 50 ? '...' : ''}"`;
       break;
     case 'DeleteEvent':
+      const delRefType = event.payload.ref_type;
+      const delRefName = event.payload.ref || '';
+      message = `Deleted ${delRefType} ${delRefName ? `"${delRefName}"` : ''} in ${event.repo.name}`;
       break;
     case 'DiscussionEvent':
+      const discussionAction = event.payload.action
+      message = `${discussionAction} a discussion in ${event.repo.name}`;
       break;
     case 'GollumEvent':
+      message = `${event.type} in ${event.repo.name}`;
       break;
     case 'MemberEvent':
+      const memberAction = event.payload.action;
+      const member = event.payload.member.login;
+      message = `${memberAction} ${member} to ${event.repo.name}`;
       break;
     case 'PublicEvent':
       message = `Made repository ${event.repo.name} public`;
       break;
     case 'PullRequestReviewEvent':
+       const prReviewRequest = event.payload.pull_request
+       message = `Reviewed pull request #${prReviewRequest.number} in ${event.repo.name}`
       break;
     case 'PullRequestReviewCommentEvent':
+      const prComment = event.payload.comment;
+      const pullRequest = event.payload.pull_request
+      message = `Commented on pull request #${pullRequest.number} in ${event.repo.name}: "${prComment.body.substring(0, 50)}${prComment.body.length > 50 ? '...' : ''}"`;
       break; 
     case 'ReleaseEvent':
       const release = event.payload.release;
@@ -185,7 +199,7 @@ function formatActivity(event, index){
 
   }
 
-  return ` - ${index + 1} ${message}\n  ${time}`
+  return ` - ${index + 1} ${message}; ${time}`
 }
 
 
